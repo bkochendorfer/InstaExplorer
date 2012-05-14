@@ -1,0 +1,38 @@
+!!!
+%html 
+  %head
+    %title InstaExplore
+    %link{:rel => "stylesheet", :href => "/style.css", :type => "text/css", :media => "all"}
+    %link{:href => "http://fonts.googleapis.com/css?family=Open+Sans", :rel => "stylesheet", :type => "text/css"}
+    %script(src="http://maps.google.com/maps/api/js?sensor=true")  
+    %script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js")
+    %script(src="js/ui/jquery.ui.map.js")
+
+    :javascript
+      function mapLoad(){  
+      $('#map_canvas').gmap().bind('init', function(ev, map) {
+        $('#map_canvas').gmap('addMarker', {'position': '#{@location.lat},#{@location.lng}', 'bounds': true}).click(function() {
+          $('#map_canvas').gmap('openInfoWindow', {'content': 'Hello World!'}, this);
+        });
+      });}
+      window.onload=mapLoad;
+
+
+    %script{ :type => 'text/javascript' }
+      \//<![CDATA[
+      function addMarkers(){
+      - @media_items['data'].map do |media|
+        $('#map_canvas').gmap('addMarker', {'position': '#{media.location.latitude},#{media.location.longitude}', 'bounds': true }).click(function() { document.getElementById('map_photos').innerHTML=""; var img = document.createElement("IMG"); img.src = "#{media.images.standard_resolution.url}"; document.getElementById('map_photos').appendChild(img); var a = document.createElement("a"); a.setAttribute('href', '/by/#{media.user.username}');a.innerHTML = "#{media.user.username}"; document.getElementById('photo_info').innerHTML ="";document.getElementById('photo_info').appendChild(a);}); 
+      }
+      window.onload=addMarkers;
+      \//]]>
+
+  %body
+    %div{:id => "rounded"}
+      %form{ :action => "", :method => "post"}
+        %fieldset{:id => "main_page_field"}
+          %input{:type => "search", :name => "address", :class => "text", :class => "searchbox_main_page", :placeholder =>  "Address"}
+      %div{:id => "map_canvas"}
+      %div{:id => "map_photos"}
+        %div{:id => "photo_text"} Click a pin on to view photos
+      %div{:id => "photo_info"}

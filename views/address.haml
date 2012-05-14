@@ -1,0 +1,46 @@
+!!!
+%html 
+  %head
+    %title InstaExplore
+    %link{:rel => "stylesheet", :href => "/style.css", :type => "text/css", :media => "all"}
+    %link{:href => "http://fonts.googleapis.com/css?family=Open+Sans", :rel => "stylesheet", :type => "text/css"}
+    %script(src="http://maps.google.com/maps/api/js?sensor=true")  
+    %script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js")
+    %script(src="js/ui/jquery.ui.map.js")
+
+    :javascript
+      function mapLoad(){  
+      $('#map_canvas').gmap().bind('init', function(ev, map) {
+        $('#map_canvas').gmap('addMarker', {'position': '#{@location.lat},#{@location.lng}', 'bounds': true}).click(function() {
+          $('#map_canvas').gmap('openInfoWindow', {'content': 'Hello World!'}, this);
+        });
+      });}
+      window.onload=mapLoad;
+
+
+    %script{ :type => 'text/javascript' }
+      \//<![CDATA[
+      function addMarkers(){
+      - @media_items['data'].map do |media|
+        $('#map_canvas').gmap('addMarker', {'position': '#{media.location.latitude},#{media.location.longitude}', 'bounds': true }).click(function() { document.getElementById('span_text').innerHTML=""; var img = document.createElement("IMG"); img.src = "#{media.images.standard_resolution.url}"; document.getElementById('span_text').appendChild(img); document.getElementById('profile_name').innerHTML ="<h2><a href=\"/by/#{media.user.username}\">#{media.user.username}</h2>"; document.getElementById('view_profile_photo').src="#{media.user.profile_picture}";}); 
+      }
+      window.onload=addMarkers;
+      \//]]>
+
+  %body
+    %div{:id => "header"}
+      %div{:id => "user_information"}
+        %img{:src => "#{session[:user_photo]}", :id => "user_profile_photo"}
+        %h2= @current_user
+    %div{:id => "rounded"}
+      %div{:id => "address_map"}
+        %form{:action => "", :method => "post"}
+          %fieldset{:id => "main_page_field"}
+            %input{:type => "search", :name => "address", :class => "text", :class => "searchbox_main_page", :placeholder =>  "Enter a location"}
+        %div{:id => "map_canvas"}
+      %div{:id => "map_photos"}
+        %div{:id => "profile_information"}
+          %img{:id => "view_profile_photo"}
+          %h2{:id =>"profile_name"}
+        %div{:id => "photo_text"}
+          %span{:id => "span_text"} Click a pin on to view photos
