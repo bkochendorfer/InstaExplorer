@@ -33,7 +33,7 @@ end
 get "/search" do
   get_user_status
   @media_items = []
-  @location = Geokit::Geocoders::YahooGeocoder.geocode session[:last_search] ||"67.175.7.149" #"#{request_ip}"
+  @location = Geokit::Geocoders::YahooGeocoder.geocode session[:last_search] || "#{request_ip}"
   @media_items = Instagram.media_search(@location.lat, @location.lng)
   store_search
   haml :address  
