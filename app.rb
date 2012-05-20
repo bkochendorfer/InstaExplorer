@@ -6,7 +6,7 @@ require "hashie"
 
 enable :sessions
 
-CALLBACK_URL = "http://localhost:9393/oauth/callback"
+CALLBACK_URL = "http://instaexplorer.heroku.com/oauth/callback"
 
 Instagram.configure do |config|
   config.client_id = "033ac32990c440b680a588529d7ee35d"
