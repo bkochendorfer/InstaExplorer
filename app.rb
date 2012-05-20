@@ -5,6 +5,7 @@ require "haml"
 require "hashie"
 
 enable :sessions
+set :session_secret, ENV['SESSION_KEY']
 
 CALLBACK_URL = "http://instaexplorer.heroku.com/oauth/callback"
 
