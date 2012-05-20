@@ -42,8 +42,20 @@ h2{
 }
 
 h2 a{
+  font-size: 18px;
   color: gray;
   margin-bottom: 0px;
+  text-decoration: none;
+  text-align: left;
+  margin-left: 10px;
+}
+
+#photo_like{
+  margin-left: 500px;
+}
+
+#follow{
+  margin-left: 450px;
 }
 
 div#map_photos {

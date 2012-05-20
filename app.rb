@@ -6,7 +6,6 @@ require "hashie"
 
 enable :sessions
 
-
 CALLBACK_URL = "http://localhost:9393/oauth/callback"
 
 Instagram.configure do |config|
@@ -18,58 +17,78 @@ get "/" do
   redirect "/search"
 end
 
-get "/connect*:redirect" do
-   "<a href=\"/oauth/connect#{params[:redirect]}\">Connect with Instagram</a>"
+get "/oauth/connect" do
+  puts redirect Instagram.authorize_url(:redirect_uri => CALLBACK_URL, :scope => "likes", :scope => "relationships")
 end
 
-get "/oauth/connect*" do
-  redirect Instagram.authorize_url(:redirect_uri => CALLBACK_URL)
-end
-
-get "/oauth/callback*" do
+get "/oauth/callback" do
   response_insta = Instagram.get_access_token(params[:code], :redirect_uri => CALLBACK_URL)
   session[:access_token] = response_insta.access_token
   session[:user] = response_insta.user.username
   session[:user_photo] = response_insta.user.profile_picture
   session['instagram_auth'] = "true"
-  redirect "/by/"
+  redirect "/by/#{session[:redirect_user]}"
 end
 
 get "/search" do
-  if session[:user] 
-    @current_user = session[:user]
-  else
-    @current_user = "<a href=\"/oauth/connect\">Connect with Instagram</a>"
-  end
+  get_user_status
   @media_items = []
-  @location = Geokit::Geocoders::YahooGeocoder.geocode "67.175.7.149" #"#{request_i}"
+  @location = Geokit::Geocoders::YahooGeocoder.geocode session[:last_search] ||"67.175.7.149" #"#{request_ip}"
   @media_items = Instagram.media_search(@location.lat, @location.lng)
+  store_search
   haml :address  
 end
 
 post "/search" do
+  get_user_status
   @media_items = []
   @location = Geokit::Geocoders::YahooGeocoder.geocode "#{params[:address]}"
   @media_items = Instagram.media_search(@location.lat, @location.lng)
+  store_search
   haml :search_results
 end
 
 get "/by/:name" do
   unless session['instagram_auth'] == "true"
-    redirect "/connect&user=#{params[:name]}"
+    session[:redirect_user] = "#{params[:name]}"
+    redirect "/oauth/connect"
   end
+  get_user_status
   client = Instagram.client(:access_token => session[:access_token])
   user = client.user
   user_search = Instagram.user_search(params[:name])
   user_id = user_search.map {|get| get.id}
-  html =""
-  @media_feed = Instagram.user_recent_media(user_id[0].to_i, :access_token => session[:access_token])
-  @media_feed.map do |media|
-    html << "<img src='#{media.images.thumbnail.url}'>"
-  end
-  html
+  @media_feed = Instagram.user_recent_media(user_id[0].to_i, :access_token => session[:access_token]).select {|photo| photo.location?}
+  haml :by
+end
+
+post "/by/:name" do
+  @location = Geokit::Geocoders::YahooGeocoder.geocode "#{params[:address]}"
+  store_search
+  redirect "/search"  
+end
+
+get "/like/:id" do
+  Instagram.like_media(params[:id], :access_token => session[:access_token])
+end
+
+get "/follow/:id" do
+  Instagram.follow_user(params[:id], :access_token => session[:access_token])
 end
 
 get "/*" do
   redirect "/"
 end
+
+def get_user_status
+ if session[:user] 
+    @current_user = session[:user]
+  else
+    @current_user = "<a href=\"/oauth/connect\">Connect with Instagram</a>" 
+    session[:user_photo] = "/images/Instagram_Icon_Small.png"
+  end
+end
+
+def store_search
+  session[:last_search] = "#{@location.lat}, #{@location.lng}"
+end  
