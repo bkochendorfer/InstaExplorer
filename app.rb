@@ -84,6 +84,7 @@ get "/*" do
 end
 
 def get_user_status
+  puts "figuring it out"
  if session[:user] 
     @current_user = session[:user]
   else
