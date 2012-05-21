@@ -4,10 +4,9 @@ require "geokit"
 require "haml"
 require "hashie"
 
-configure do
-  enable :sessions
-  set :session_secret, ENV['SESSION_SECRET'] ||= "something"
-end
+
+enable :sessions
+set :session_secret, "something"
 
 CALLBACK_URL = "http://instaexplorer.heroku.com/oauth/callback"
 
