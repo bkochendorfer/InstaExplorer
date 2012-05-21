@@ -17,6 +17,12 @@
   height: 50px;
   border-radius: 8px; }
 
+#error {
+  float: left;
+  margin-left: 70px;
+  padding-top: 14px;
+  color: green; }
+
 #view_profile_photo {
   float: left;
   height: 50px;

@@ -29,8 +29,8 @@
 
     :javascript
       function bindLinks(){
-      $("#photo_like a").click(function(event){event.preventDefault();var a = $("#photo_like a").attr("href"); $.get(a);});
-      $("#follow a").click(function(event){event.preventDefault();var b = $("#follow a").attr("href"); $.get(b);});
+      $("#photo_like a").click(function(event){event.preventDefault();var a = $("#photo_like a").attr("href"); $.get(a).error(function() { $("#error").append("Connect to like photos"); });});
+      $("#follow a").click(function(event){event.preventDefault();var b = $("#follow a").attr("href"); $.get(b).error(function() { $("#error").append("Connect to follow users"); });});
       }
 
   %body
@@ -38,6 +38,7 @@
       %div{:id => "user_information"}
         %img{:src => "#{session[:user_photo]}", :id => "user_profile_photo"}
         %h2= @current_user
+    %div{:id => "error"}    
     %div{:id => "rounded"}
       %div{:id => "address_map"}
         %form{:action => "", :method => "post"}
