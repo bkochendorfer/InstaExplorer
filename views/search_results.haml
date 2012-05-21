@@ -29,8 +29,8 @@
 
     :javascript
       function bindLinks(){
-      $("#photo_like a").click(function(event){event.preventDefault();var a = $("#photo_like a").attr("href"); $.get(a).error(function() { $("#error").append("Connect to like photos"); });});
-      $("#follow a").click(function(event){event.preventDefault();var b = $("#follow a").attr("href"); $.get(b).error(function() { $("#error").append("Connect to follow users"); });});
+      $("#photo_like a").click(function(event){event.preventDefault();var a = $("#photo_like a").attr("href"); $.get(a).error(function() { $("#error").empty().append("Connect to like photos"); });});
+      $("#follow a").click(function(event){event.preventDefault();var b = $("#follow a").attr("href"); $.get(b).error(function() { $("#error").empty().append("Connect to follow users"); });});
       }
 
   %body
