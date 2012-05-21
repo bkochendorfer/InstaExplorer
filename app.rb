@@ -6,7 +6,7 @@ require "hashie"
 
 
 enable :sessions
-set :session_secret, "something"
+set :session_secret, ENV['SESSION_SECRET'] ||= "something"
 set :protection, except: :session_hijacking
 
 CALLBACK_URL = "http://instaexplorer.heroku.com/oauth/callback"
@@ -84,8 +84,6 @@ get "/*" do
 end
 
 def get_user_status
-  puts "figuring it out"
-  puts session[:user]
  if session[:user] 
     @current_user = session[:user]
   else
