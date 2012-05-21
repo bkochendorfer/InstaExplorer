@@ -85,6 +85,7 @@ end
 
 def get_user_status
   puts "figuring it out"
+  puts session[:user]
  if session[:user] 
     @current_user = session[:user]
   else
