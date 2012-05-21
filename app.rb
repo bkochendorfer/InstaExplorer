@@ -7,6 +7,7 @@ require "hashie"
 
 enable :sessions
 set :session_secret, "something"
+set :protection, except: :session_hijacking
 
 CALLBACK_URL = "http://instaexplorer.heroku.com/oauth/callback"
 
@@ -95,4 +96,4 @@ end
 
 def store_search
   session[:last_search] = "#{@location.lat}, #{@location.lng}"
-end  
+end 
