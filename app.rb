@@ -12,8 +12,8 @@ set :protection, except: :session_hijacking
 CALLBACK_URL = "http://instaexplorer.heroku.com/oauth/callback"
 
 Instagram.configure do |config|
-  config.client_id = "033ac32990c440b680a588529d7ee35d"
-  config.client_secret = "efc9a56b44744cce994bfe099caabb2e"
+  config.client_id = ""
+  config.client_secret = ""
 end
 
 get "/" do
