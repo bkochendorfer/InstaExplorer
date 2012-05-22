@@ -36,7 +36,7 @@ end
 get "/search" do
   get_user_status
   @media_items = []
-  @location = Geokit::Geocoders::YahooGeocoder.geocode session[:last_search] || "#{request.ip}"
+  @location = Geokit::Geocoders::YahooGeocoder.geocode session[:last_search] || "chicago" #"#{request.ip}"
   @media_items = Instagram.media_search(@location.lat, @location.lng)
   store_search
   haml :address  
@@ -72,11 +72,19 @@ post "/by/:name" do
 end
 
 get "/like/:id" do
-  Instagram.like_media(params[:id], :access_token => session[:access_token])
+  if session[:user]
+    Instagram.like_media(params[:id], :access_token => session[:access_token])
+  else
+    return 403
+  end
 end
 
 get "/follow/:id" do
-  Instagram.follow_user(params[:id], :access_token => session[:access_token])
+  if session[:user]
+   Instagram.follow_user(params[:id], :access_token => session[:access_token])
+  else
+    return 403
+  end
 end
 
 get "/*" do
